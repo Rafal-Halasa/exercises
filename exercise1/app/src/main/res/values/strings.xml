@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">exercise1</string>
+    <string name="bt_test">TEST</string>
+    <string name="action_settings">settings</string>
+    <string name="status_ok">SUCCESS</string>
+    <string name="status_fail">FAILURE</string>
+</resources>
