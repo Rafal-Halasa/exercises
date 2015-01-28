@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">exercise2</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="first_name">Imię</string>
+    <string name="last_name">Nazwisko</string>
+    <string name="married">Zamężny/a</string>
+    <string name="male">mężczyzna</string>
+    <string name="female">kobieta</string>
+    <string name="gender">Płeć</string>
+    <string name="save">ZAPISZ</string>
+    <string name="load">WCZYTAJ</string>
+    <string name="date">Data Urodzin</string>
+    <string name="error_blank_fields">Niestety musisz uzupełnić pola Imie i Nazwsiko</string>
+</resources>
