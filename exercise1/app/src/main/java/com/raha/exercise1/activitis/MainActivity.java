@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.raha.exercise1.R;
+import com.raha.exercise1.interfaces.ConnectionResponse;
 import com.raha.exercise1.url.PageConnect;
 import com.raha.exercise1.utils.Consts;
 
@@ -54,14 +55,25 @@ public class MainActivity extends ActionBarActivity {
     private void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
     }
+    private void goneProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
+    ConnectionResponse conResponse= new ConnectionResponse() {
+        @Override
+        public Integer getStatus(Boolean status) {
+            goneProgressBar();
+            showToast(status);
+            return null;
+        }
+    };
     private void sendRequest() {
-        PageConnect pageConnect = new PageConnect(this,progressBar);
+        PageConnect pageConnect = new PageConnect(conResponse);
         URL serverAddress = null;
         try {
             serverAddress = new URL(Consts.SERVER_ADDRESS);
@@ -71,5 +83,15 @@ public class MainActivity extends ActionBarActivity {
         if (serverAddress != null)
             pageConnect.execute(serverAddress);
     }
+    private void showToast(Boolean responseStatus) {
+        int stringTooToast;
+        if (responseStatus) {
+            stringTooToast = R.string.status_ok;
+        } else {
+            stringTooToast = R.string.status_fail;
+        }
+        Toast.makeText(this, stringTooToast, Toast.LENGTH_SHORT).show();
+    }
+
 
 }
