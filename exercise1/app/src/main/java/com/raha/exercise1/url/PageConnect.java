@@ -39,7 +39,8 @@ public class PageConnect extends AsyncTask<String, Integer, Boolean> {
             url = new URL(urlStr);
         } catch (MalformedURLException e) {
             try {
-                url = new URL(httpProt+urlStr);
+                urlStr=httpProt+urlStr;
+                url = new URL(urlStr);
             } catch (MalformedURLException e1) {
                 e1.printStackTrace();
             }
