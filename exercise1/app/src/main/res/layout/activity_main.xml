@@ -8,22 +8,68 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/rl_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:onClick="buttonSendRequest"
-        android:text="@string/bt_test" />
+        android:layout_margin="20dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_url_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_url_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:singleLine="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_test_cointainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/rl_url_container">
+
+            <Button
+                android:id="@+id/bt_test"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_centerHorizontal="true"
+                android:onClick="buttonSendRequest"
+                android:text="@string/bt_test" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_list_view_cointainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_test_cointainer"
+            android:layout_marginTop="5dp"
+
+            >
+
+
+            <ListView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lv_urls_list" />
+        </RelativeLayout>
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button"
         android:layout_centerHorizontal="true"
         android:indeterminate="false"
         android:visibility="gone" />
+
 
 </RelativeLayout>

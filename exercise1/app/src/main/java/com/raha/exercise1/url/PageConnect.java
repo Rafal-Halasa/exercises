@@ -11,28 +11,41 @@ import com.raha.exercise1.interfaces.ConnectionResponse;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 
 /**
  * Created by raha on 2015-01-23.
  */
-public class PageConnect extends AsyncTask<URL, Integer, Boolean> {
+public class PageConnect extends AsyncTask<String, Integer, Boolean> {
 
 
     private ConnectionResponse conResponse;
-
+    private URL url;
+    private String urlStr;
+    private String httpProt="http://";
     public PageConnect(ConnectionResponse conResponse) {
 
         this.conResponse = conResponse;
     }
 
     @Override
-    protected Boolean doInBackground(URL... urls) {
+    protected Boolean doInBackground(String... urls) {
         HttpURLConnection urlConnection = null;
         Boolean responseStatus = false;
+        urlStr=urls[0];
         try {
-            urlConnection = getResponse(urls[0]);
+            url = new URL(urlStr);
+        } catch (MalformedURLException e) {
+            try {
+                url = new URL(httpProt+urlStr);
+            } catch (MalformedURLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        try {
+            urlConnection = getResponse(url);
             responseStatus = checkResponseCode(urlConnection.getResponseCode());
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,7 +59,7 @@ public class PageConnect extends AsyncTask<URL, Integer, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean responseStatus) {
-        conResponse.getStatus(responseStatus);
+        conResponse.getStatusAndUrl(responseStatus, urlStr);
 
     }
 
