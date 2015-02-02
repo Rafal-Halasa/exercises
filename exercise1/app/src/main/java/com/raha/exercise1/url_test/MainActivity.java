@@ -19,6 +19,7 @@ import timber.log.Timber;
 
 public class MainActivity extends ActionBarActivity implements ConnectionResponse {
     public static final String TAG_MAIN_ACT = "Main Act";
+    private int noValueInt=-1;
     private String sendLog = "send request";
     private ProgressBar progressBar;
     private EditText urlEditText;
@@ -92,33 +93,56 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
     public Integer getStatusAndUrl(Boolean status, String url) {
         goneProgressBar();
         createListView();
-        addFieldTooList(status, url);
+        addNewFileOrUpdate(status, url);
         return null;
     }
 
-    private void addFieldTooList(Boolean status, String url) {
-        int ring;
-        if (status) {
-            ring = R.drawable.green_circle;
-        } else {
-            ring = R.drawable.red_circle;
+    private void addNewFileOrUpdate(Boolean status, String url) {
+        int ringColorId = getRingColorId(status);
+        int fieldPosition= findUrlInList(url);
+        if(fieldPosition<0){
+            addFieldTooList(ringColorId, url);
+        }else{
+            updateFieldOnList(ringColorId,fieldPosition,url);
         }
-        if(canAddNewField(url)){
+    }
+
+    private int getRingColorId(Boolean status) {
+        if (status) {
+            return R.drawable.green_circle;
+        } else {
+            return R.drawable.red_circle;
+        }
+    }
+
+
+    private void addFieldTooList(int ring, String url) {
             urlsViewModels.add(new UrlsViewModel(ring, url));
-            urlsAdapter.notifyDataSetChanged();
+            updateUrlsAdapter();
+    }
+    private void updateFieldOnList(int ringColorId, int fieldPosition, String url) {
+        UrlsViewModel item = urlsAdapter.getItem(fieldPosition);
+        if(item.getCircleResource()!=ringColorId){
+            item.setCircleResource(ringColorId);
+            updateUrlsAdapter();
         }
 
     }
 
-    private boolean canAddNewField(String url) {
+    private void updateUrlsAdapter() {
+        urlsAdapter.notifyDataSetChanged();
+    }
+
+
+    private int findUrlInList(String url) {
         UrlsViewModel viewModel;
         for (int i = 0; i < urlsViewModels.size(); i++) {
             viewModel  = urlsViewModels.get(i);
             if (viewModel.getUrl().equals(url)){
-                return false;
+                return i;
             }
         }
-        return true;
+        return noValueInt;
     }
 
     private void createListView() {
@@ -128,4 +152,7 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
             urlsList.setAdapter(urlsAdapter);
         }
     }
+
+
+    
 }
