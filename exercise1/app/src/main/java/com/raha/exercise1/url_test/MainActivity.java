@@ -14,16 +14,23 @@ import com.raha.exercise1.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 
 public class MainActivity extends ActionBarActivity implements ConnectionResponse {
+    @InjectView(R.id.progressBar)
+    ProgressBar progressBar;
+    @InjectView(R.id.et_url_field)
+    EditText urlEditText;
+    @InjectView(R.id.lv_urls_list)
+    ListView urlsList;
+
     public static final String TAG_MAIN_ACT = "Main Act";
-    private int noValueInt=-1;
+    private int noValueInt = -1;
     private String sendLog = "send request";
-    private ProgressBar progressBar;
-    private EditText urlEditText;
-    private ListView urlsList;
     private UrlsListAdapter urlsAdapter;
     private List<UrlsViewModel> urlsViewModels;
 
@@ -31,21 +38,12 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
         setTagLog();
-        initializeAllVariable();
-
     }
-
 
     private void setTagLog() {
         Timber.tag(TAG_MAIN_ACT);
-    }
-
-    private void initializeAllVariable() {
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        urlEditText = (EditText) findViewById(R.id.et_url_field);
-        urlsList = (ListView) findViewById(R.id.lv_urls_list);
-
     }
 
     @Override
@@ -63,9 +61,16 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
         return super.onOptionsItemSelected(item);
     }
 
-    public void buttonSendRequest(View view) {
-        showProgressBar();
+    @OnClick(R.id.bt_test)
+    public void buttonTestClick(View view) {
         sendRequest();
+        showProgressBar();
+    }
+
+    private void sendRequest() {
+        Timber.d(sendLog);
+        PageConnect pageConnect = new PageConnect(this);
+        pageConnect.execute(urlEditText.getText().toString());
     }
 
     private void showProgressBar() {
@@ -77,19 +82,6 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-
-    private void sendRequest() {
-        Timber.d(sendLog);
-        PageConnect pageConnect = new PageConnect(this);
-        pageConnect.execute(urlEditText.getText().toString());
-    }
-
-
-    @Override
     public Integer getStatusAndUrl(Boolean status, String url) {
         goneProgressBar();
         createListView();
@@ -99,11 +91,11 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
 
     private void addNewFileOrUpdate(Boolean status, String url) {
         int ringColorId = getRingColorId(status);
-        int fieldPosition= findUrlInList(url);
-        if(fieldPosition<0){
+        int fieldPosition = findUrlInList(url);
+        if (fieldPosition < 0) {
             addFieldTooList(ringColorId, url);
-        }else{
-            updateFieldOnList(ringColorId,fieldPosition,url);
+        } else {
+            updateFieldOnList(ringColorId, fieldPosition);
         }
     }
 
@@ -117,12 +109,13 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
 
 
     private void addFieldTooList(int ring, String url) {
-            urlsViewModels.add(new UrlsViewModel(ring, url));
-            updateUrlsAdapter();
+        urlsViewModels.add(new UrlsViewModel(ring, url));
+        updateUrlsAdapter();
     }
-    private void updateFieldOnList(int ringColorId, int fieldPosition, String url) {
+
+    private void updateFieldOnList(int ringColorId, int fieldPosition) {
         UrlsViewModel item = urlsAdapter.getItem(fieldPosition);
-        if(item.getCircleResource()!=ringColorId){
+        if (item.isCircleResource(ringColorId)) {
             item.setCircleResource(ringColorId);
             updateUrlsAdapter();
         }
@@ -137,8 +130,8 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
     private int findUrlInList(String url) {
         UrlsViewModel viewModel;
         for (int i = 0; i < urlsViewModels.size(); i++) {
-            viewModel  = urlsViewModels.get(i);
-            if (viewModel.getUrl().equals(url)){
+            viewModel = urlsViewModels.get(i);
+            if (viewModel.getUrl().equals(url)) {
                 return i;
             }
         }
@@ -154,5 +147,4 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
     }
 
 
-    
 }

@@ -12,6 +12,9 @@ import com.raha.exercise1.R;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * Created by raha on 2015-01-29.
  */
@@ -25,7 +28,7 @@ public class UrlsListAdapter extends BaseAdapter {
 
         this.applicationContext = applicationContext;
         this.urlsViewModels = urlsViewModels;
-        infalter= LayoutInflater.from(this.applicationContext);
+        infalter = LayoutInflater.from(this.applicationContext);
     }
 
     @Override
@@ -46,32 +49,38 @@ public class UrlsListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         UrlViewHolder urlHolder;
-        if (convertView==null){
-            convertView =infalter.inflate(R.layout.url_list_inflater,null);
-            urlHolder=new UrlViewHolder();
+        if (convertView == null) {
+            convertView = infalter.inflate(R.layout.url_list_inflater, null);
+            urlHolder = new UrlViewHolder(convertView);
             convertView.setTag(urlHolder);
-        }else{
-            urlHolder=(UrlViewHolder)convertView.getTag();
+        } else {
+            urlHolder = (UrlViewHolder) convertView.getTag();
         }
-        urlHolder.urlText=setView(convertView,R.id.tv_url,urlsViewModels.get(position).getUrl());
-        urlHolder.circle=setView(convertView,R.id.rl_circle_container,urlsViewModels.get(position).getCircleResource());
-
+        setHolderViews(urlHolder,position);
         return convertView;
     }
 
-    private TextView setView(View convertView, int id, String url) {
-        TextView textView = (TextView) convertView.findViewById(id);
-        textView.setText(url);
-        return textView;
-    }
-    private RelativeLayout setView(View convertView, int id, int resId) {
-        RelativeLayout relLay = (RelativeLayout) convertView.findViewById(id);
-        relLay.setBackgroundResource(resId);
-        return relLay;
+    private void setHolderViews(UrlViewHolder urlHolder, int position) {
+        setTextViewHolder(urlHolder.urlText, urlsViewModels.get(position).getUrl());
+        setCircleViewHolder(urlHolder.circle, urlsViewModels.get(position).getCircleResource());
     }
 
-    private class UrlViewHolder{
-            TextView urlText;
-            RelativeLayout circle;
+    private void setTextViewHolder(TextView urlText, String url) {
+        urlText.setText(url);
+    }
+
+    private void setCircleViewHolder(RelativeLayout circle, int resId) {
+        circle.setBackgroundResource(resId);
+    }
+
+    static class UrlViewHolder {
+        @InjectView(R.id.tv_url)
+        TextView urlText;
+        @InjectView(R.id.rl_circle_container)
+        RelativeLayout circle;
+
+        public UrlViewHolder(View view) {
+            ButterKnife.inject(this,view);
+        }
     }
 }
