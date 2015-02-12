@@ -2,8 +2,6 @@ package com.raha.exercise1.url_test;
 
 import android.os.AsyncTask;
 
-import com.raha.exercise1.url_test.ConnectionResponse;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

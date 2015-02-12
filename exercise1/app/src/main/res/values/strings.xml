@@ -6,4 +6,5 @@
     <string name="action_settings">settings</string>
     <string name="status_ok">SUCCESS</string>
     <string name="status_fail">FAILURE</string>
+    <string name="no_internet_connection">No Internet Connection</string>
 </resources>

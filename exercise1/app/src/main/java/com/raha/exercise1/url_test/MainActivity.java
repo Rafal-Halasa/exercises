@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.raha.exercise1.R;
+import com.raha.exercise1.utils.ConnectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
+
+import static com.raha.exercise1.utils.ConnectionUtils.*;
 
 
 public class MainActivity extends ActionBarActivity implements ConnectionResponse {
@@ -60,8 +64,12 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
 
     @OnClick(R.id.bt_test)
     public void buttonTestClick(View view) {
-        sendRequest();
-        showProgressBar();
+        if(isInternetConnection(this)) {
+            sendRequest();
+            showProgressBar();
+        }else{
+            Toast.makeText(getApplicationContext(),R.string.no_internet_connection,Toast.LENGTH_LONG).show();
+        }
     }
 
     private void sendRequest() {
