@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.raha.exercise1.R;
-import com.raha.exercise1.utils.ConnectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +36,8 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
     private String sendLog = "send request";
     private UrlsListAdapter urlsAdapter;
     private List<UrlsViewModel> urlsViewModels;
+    private ConnectionManager connectionRequest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,6 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
     }
-
 
 
     @Override
@@ -64,19 +64,21 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
 
     @OnClick(R.id.bt_test)
     public void buttonTestClick(View view) {
-        if(isInternetConnection(this)) {
+        if (isInternetConnection(this)) {
             sendRequest();
             showProgressBar();
-        }else{
-            Toast.makeText(getApplicationContext(),R.string.no_internet_connection,Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.no_internet_connection, Toast.LENGTH_LONG).show();
         }
     }
 
     private void sendRequest() {
-        Timber.d(sendLog);
-        PageConnect pageConnect = new PageConnect(this);
-        pageConnect.execute(urlEditText.getText().toString());
+        if (connectionRequest == null)
+            connectionRequest = new ConnectionManager(this);
+        if (!connectionRequest.isRequestSend())
+            connectionRequest.sendRequest(urlEditText.getText().toString());
     }
+
 
     private void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
