@@ -39,12 +39,9 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-        setTagLog();
     }
 
-    private void setTagLog() {
-        Timber.tag(TAG_MAIN_ACT);
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,6 +80,7 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
 
     @Override
     public Integer getStatusAndUrl(Boolean status, String url) {
+        Timber.d(sendLog);
         goneProgressBar();
         createListView();
         addNewFileOrUpdate(status, url);
@@ -110,22 +108,17 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
 
     private void addFieldTooList(int ring, String url) {
         urlsViewModels.add(new UrlsViewModel(ring, url));
-        updateUrlsAdapter();
+        urlsAdapter.notifyDataSetChanged();
     }
 
     private void updateFieldOnList(int ringColorId, int fieldPosition) {
         UrlsViewModel item = urlsAdapter.getItem(fieldPosition);
-        if (item.isCircleResource(ringColorId)) {
+        if (!item.isCircleResource(ringColorId)) {
             item.setCircleResource(ringColorId);
-            updateUrlsAdapter();
+            urlsAdapter.notifyDataSetChanged();
         }
 
     }
-
-    private void updateUrlsAdapter() {
-        urlsAdapter.notifyDataSetChanged();
-    }
-
 
     private int findUrlInList(String url) {
         UrlsViewModel viewModel;
