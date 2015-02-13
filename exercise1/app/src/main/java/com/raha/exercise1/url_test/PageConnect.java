@@ -7,39 +7,32 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import timber.log.Timber;
+
 
 /**
  * Created by raha on 2015-01-23.
  */
-public class PageConnect extends AsyncTask<String, Integer, Boolean> {
+public class PageConnect extends AsyncTask<URL, Integer, Boolean> {
 
 
     private ConnectionResponse conResponse;
     private URL url;
     private String urlStr;
-    private String httpProt="http://";
+    private String httpProt = "http://";
+
     public PageConnect(ConnectionResponse conResponse) {
 
         this.conResponse = conResponse;
     }
 
     @Override
-    protected Boolean doInBackground(String... urls) {
+    protected Boolean doInBackground(URL... urls) {
         HttpURLConnection urlConnection = null;
         Boolean responseStatus = false;
-        urlStr=urls[0];
+        url = urls[0];
         try {
-            url = new URL(urlStr);
-        } catch (MalformedURLException e) {
-            try {
-                urlStr=httpProt+urlStr;
-                url = new URL(urlStr);
-            } catch (MalformedURLException e1) {
-                e1.printStackTrace();
-            }
-        }
-        try {
-            urlConnection = getResponse(url);
+            urlConnection = (HttpURLConnection) url.openConnection();
             responseStatus = checkResponseCode(urlConnection.getResponseCode());
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,22 +46,14 @@ public class PageConnect extends AsyncTask<String, Integer, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean responseStatus) {
-        conResponse.getStatusAndUrl(responseStatus, urlStr);
+        conResponse.getStatusAndUrl(responseStatus, url.toString());
+        Timber.e("dasd", new Object());
 
     }
 
     private Boolean checkResponseCode(int responseCode) {
-        if (responseCode == 200) {
-            return true;
-        } else {
-            return false;
-        }
+        return responseCode == 200;
     }
 
-    private HttpURLConnection getResponse(URL url) throws IOException {
-        HttpURLConnection urlConnected = null;
-        urlConnected = (HttpURLConnection) url.openConnection();
-        return urlConnected;
-    }
 
 }

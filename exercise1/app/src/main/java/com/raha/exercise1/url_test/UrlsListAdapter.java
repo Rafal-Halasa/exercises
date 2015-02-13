@@ -56,7 +56,7 @@ public class UrlsListAdapter extends BaseAdapter {
         } else {
             urlHolder = (UrlViewHolder) convertView.getTag();
         }
-        setHolderViews(urlHolder,position);
+        setHolderViews(urlHolder, position);
         return convertView;
     }
 
@@ -80,7 +80,7 @@ public class UrlsListAdapter extends BaseAdapter {
         RelativeLayout circle;
 
         public UrlViewHolder(View view) {
-            ButterKnife.inject(this,view);
+            ButterKnife.inject(this, view);
         }
     }
 }

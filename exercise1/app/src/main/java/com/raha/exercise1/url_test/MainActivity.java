@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.raha.exercise1.R;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,55 +48,40 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
         ButterKnife.inject(this);
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void getStatusAndUrl(Boolean status, String url) {
+        Timber.d(sendLog);
+        progressBar.setVisibility(View.GONE);
+        createListView();
+        addNewFileOrUpdate(status, url);
     }
 
     @OnClick(R.id.bt_test)
     public void buttonTestClick(View view) {
-        if (isInternetConnection(this)) {
-            sendRequest();
-            showProgressBar();
+        if (isInternetConnection(getApplicationContext())) {
+            if (sendRequest())
+                progressBar.setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(getApplicationContext(), R.string.no_internet_connection, Toast.LENGTH_LONG).show();
         }
     }
 
-    private void sendRequest() {
+    private boolean sendRequest() {
         if (connectionRequest == null)
             connectionRequest = new ConnectionManager(this);
-        if (!connectionRequest.isRequestSend())
-            connectionRequest.sendRequest(urlEditText.getText().toString());
-    }
 
-
-    private void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void goneProgressBar() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public Integer getStatusAndUrl(Boolean status, String url) {
-        Timber.d(sendLog);
-        goneProgressBar();
-        createListView();
-        addNewFileOrUpdate(status, url);
-        return null;
+        if (!connectionRequest.isRequestSend()) {
+            try {
+                URL url = new URL(urlEditText.getText().toString());
+                connectionRequest.sendRequest(url);
+            } catch (MalformedURLException e) {
+                urlEditText.setError("malformed url");
+                Timber.e("Bad URL", e);
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     private void addNewFileOrUpdate(Boolean status, String url) {
@@ -114,7 +101,6 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
             return R.drawable.red_circle;
         }
     }
-
 
     private void addFieldTooList(int ring, String url) {
         urlsViewModels.add(new UrlsViewModel(ring, url));

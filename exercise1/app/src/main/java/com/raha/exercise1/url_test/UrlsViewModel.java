@@ -27,11 +27,8 @@ public class UrlsViewModel {
     public void setCircleResource(int circleResource) {
         this.circleResource = circleResource;
     }
-    public boolean isCircleResource(int circleResource){
-        if(this.circleResource==circleResource){
-            return true;
-        }else{
-            return false;
-        }
+
+    public boolean isCircleResource(int circleResource) {
+        return this.circleResource == circleResource;
     }
 }
