@@ -36,7 +36,7 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
     public static final String TAG_MAIN_ACT = "Main Act";
     private int noValueInt = -1;
     private String sendLog = "send request";
-    private UrlsListAdapter urlsAdapter;
+    private UrlsBindAdapter urlsAdapter;
     private List<UrlsViewModel> urlsViewModels;
     private ConnectionManager connectionRequest;
 
@@ -130,7 +130,7 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
     private void createListView() {
         if (urlsViewModels == null) {
             urlsViewModels = new ArrayList<>();
-            urlsAdapter = new UrlsListAdapter(getApplicationContext(), urlsViewModels);
+            urlsAdapter = new UrlsBindAdapter(getApplicationContext(), urlsViewModels);
             urlsList.setAdapter(urlsAdapter);
         }
     }
