@@ -12,6 +12,9 @@ import com.raha.exercise1.R;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class UrlsBindAdapter extends BindableAdapter<UrlsViewModel> {
     private List<UrlsViewModel> urlsViewModels;
 
@@ -39,7 +42,10 @@ public class UrlsBindAdapter extends BindableAdapter<UrlsViewModel> {
 
     @Override
     public View newView(LayoutInflater inflater, int position, ViewGroup container) {
-        return inflater.inflate(R.layout.url_list_inflater,null);
+        View view = inflater.inflate(R.layout.url_list_inflater, container, false);
+        UrlViewHolder viewHolder = new UrlViewHolder(view);
+        view.setTag(viewHolder);
+        return view;
     }
 
     @Override
@@ -48,5 +54,16 @@ public class UrlsBindAdapter extends BindableAdapter<UrlsViewModel> {
         urlText.setText(urlsViewModels.getUrl());
         RelativeLayout circle = (RelativeLayout) view.findViewById(R.id.rl_circle_container);
         circle.setBackgroundResource(urlsViewModels.getCircleResource());
+
+    }
+
+    static class UrlViewHolder {
+        @InjectView(R.id.tv_url)
+        TextView urlText;
+        @InjectView(R.id.rl_circle_container)
+        RelativeLayout circle;
+        public UrlViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
     }
 }

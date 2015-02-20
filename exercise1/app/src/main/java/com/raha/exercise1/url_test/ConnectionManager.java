@@ -8,8 +8,20 @@ public class ConnectionManager implements ConnectionResponse {
     private boolean isRequestSend = false;
     private String sendLog = "request send";
     private ConnectionResponse conResponse;
+    private static ConnectionManager connectionManager;
 
-    public ConnectionManager(ConnectionResponse conResponse) {
+    private ConnectionManager(ConnectionResponse conResponse) {
+        this.conResponse = conResponse;
+    }
+
+    public static ConnectionManager getInstance(ConnectionResponse conResponse) {
+        if (connectionManager == null) {
+            connectionManager = new ConnectionManager(conResponse);
+        }
+        return connectionManager;
+    }
+
+    public void setConResponse(ConnectionResponse conResponse) {
         this.conResponse = conResponse;
     }
 

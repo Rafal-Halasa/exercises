@@ -47,8 +47,6 @@ public class PageConnect extends AsyncTask<URL, Integer, Boolean> {
     @Override
     protected void onPostExecute(Boolean responseStatus) {
         conResponse.getStatusAndUrl(responseStatus, url.toString());
-        Timber.e("dasd", new Object());
-
     }
 
     private Boolean checkResponseCode(int responseCode) {

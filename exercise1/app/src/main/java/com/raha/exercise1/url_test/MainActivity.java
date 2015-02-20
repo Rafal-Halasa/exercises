@@ -2,8 +2,6 @@ package com.raha.exercise1.url_test;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -11,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.raha.exercise1.R;
+import com.raha.exercise1.utils.ParseUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,8 +36,8 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
     private int noValueInt = -1;
     private String sendLog = "send request";
     private UrlsBindAdapter urlsAdapter;
-    private List<UrlsViewModel> urlsViewModels;
-    private ConnectionManager connectionRequest;
+    private List<UrlsViewModel> urlsViewModels = new ArrayList<>();
+    private ConnectionManager connectionRequest = ConnectionManager.getInstance(this);
 
 
     @Override
@@ -46,42 +45,58 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+        initializeAdapter();
+
+    }
+
+    private void initializeAdapter() {
+        urlsAdapter = new UrlsBindAdapter(getApplicationContext(), urlsViewModels);
+        urlsList.setAdapter(urlsAdapter);
     }
 
     @Override
     public void getStatusAndUrl(Boolean status, String url) {
         Timber.d(sendLog);
         progressBar.setVisibility(View.GONE);
-        createListView();
         addNewFileOrUpdate(status, url);
     }
 
     @OnClick(R.id.bt_test)
     public void buttonTestClick(View view) {
         if (isInternetConnection(getApplicationContext())) {
-            if (sendRequest())
+            if (trySendRequest())
                 progressBar.setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(getApplicationContext(), R.string.no_internet_connection, Toast.LENGTH_LONG).show();
         }
     }
 
-    private boolean sendRequest() {
-        if (connectionRequest == null)
-            connectionRequest = new ConnectionManager(this);
-
+    private boolean trySendRequest() {
         if (!connectionRequest.isRequestSend()) {
-            try {
-                URL url = new URL(urlEditText.getText().toString());
-                connectionRequest.sendRequest(url);
-            } catch (MalformedURLException e) {
-                urlEditText.setError("malformed url");
-                Timber.e("Bad URL", e);
-                return false;
-            }
-            return true;
+            return checkUrlAndSendRequest();
         }
         return false;
+    }
+
+    private boolean checkUrlAndSendRequest() {
+        String urlString = urlEditText.getText().toString();
+        if (ParseUtils.checkURL(urlString)) {
+            sendRequest(urlString);
+            return true;
+        } else {
+            urlEditText.setError("malformed url");
+            return false;
+        }
+    }
+
+    private void sendRequest(String urlString) {
+        URL url = null;
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            Timber.e("Bad URL", e);
+        }
+        connectionRequest.sendRequest(url);
     }
 
     private void addNewFileOrUpdate(Boolean status, String url) {
@@ -126,14 +141,5 @@ public class MainActivity extends ActionBarActivity implements ConnectionRespons
         }
         return noValueInt;
     }
-
-    private void createListView() {
-        if (urlsViewModels == null) {
-            urlsViewModels = new ArrayList<>();
-            urlsAdapter = new UrlsBindAdapter(getApplicationContext(), urlsViewModels);
-            urlsList.setAdapter(urlsAdapter);
-        }
-    }
-
 
 }

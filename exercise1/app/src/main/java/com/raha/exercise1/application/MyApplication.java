@@ -25,12 +25,11 @@ public class MyApplication extends Application {
     public static MyApplication getInstance() {
         return singleton;
     }
-    @InjectView(R.id.et_url_field)
-    EditText url_field;
+
     @Override
     public void onCreate() {
         singleton = this;
-        if (!BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             Timber.plant(new DebugTree());
         }
         super.onCreate();
